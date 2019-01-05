@@ -13,4 +13,4 @@ Images you will find:
 1. **Movie-This** sample execution
 1. **Do-What-It-Says** sample execution
 
-![Movie This Search Command] (https://github.com/hcv4027/liri-node-app/blob/master/images/movie-this-command.PNG)
+![Movie This Search Command](https://github.com/hcv4027/liri-node-app/blob/master/images/movie-this-command.PNG)
