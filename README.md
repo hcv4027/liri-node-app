@@ -13,4 +13,4 @@ Images you will find:
 1. **Movie-This** sample execution
 1. **Do-What-It-Says** sample execution
 
-![Movie This Search Command] (/images/movie-this-command.PNG)
+![Movie This Search Command] (images/movie-this-command.PNG)
