@@ -8,7 +8,9 @@ The code and content of this GitHub repository represent the **Liri Bot** homewo
 
 Images you will find:
 =================================
-1. Concert-This Sample execution
-1. Spotify-This sample execution
-1. Movie-This sample execution
-1. Do-What-It-Says sample execution
+1. **Concert-This** Sample execution
+1. **Spotify-This** sample execution
+1. **Movie-This** sample execution
+1. **Do-What-It-Says** sample execution
+
+![Movie This Search Command] (/images/movie-this-command.PNG)
