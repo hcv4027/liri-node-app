@@ -6,7 +6,7 @@ The code and content of this GitHub repository represent the **Liri Bot** homewo
 * Variables have been created with meaningful names, for intuitive flow.
 * Formatting has been applied to allow for easier reading and understanding.
 
-Images you will find:
+##Images you will find:
 =================================
 1. **Concert-This** Sample execution
 1. **Spotify-This** sample execution

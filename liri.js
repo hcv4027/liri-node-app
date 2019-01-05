@@ -4,7 +4,6 @@ require('dotenv').config();
 var axios = require('axios');
 var keys = require('./keys.js');
 var moment = require("moment");
-var inquirer = require('inquirer');
 var Spotify = require('node-spotify-api');
 var spotify = new Spotify(keys.spotify);
 var fs = require('fs');
@@ -16,7 +15,7 @@ var inputString = process.argv;
 var command = inputString[2];
 
 
-console.log("User chose the following Command "+ command);
+console.log("User chose the following Command: "+ command.toUpperCase());
 
 var searchTerm = process.argv.slice(3).join(" ");
 console.log(searchTerm);
@@ -32,30 +31,24 @@ function commandControl(command, searchTerm)
     {
         case "concert-this":
         {
-            console.log("Concert Lookup");
             get_Bands(searchTerm);
             break;
         }
-        
 
         case "movie-this":
         {
-            console.log("Movie Lookup");
             get_Movie(searchTerm);
             break;
         }
-        
 
         case "spotify-this-song":
         {
-            console.log("Spotify Lookup");
             get_Spotify(searchTerm);
             break;
         }
 
         case "do-what-it-says":
         {
-            console.log("Text File Load Lookup");
             get_Random();
             break;
         }
@@ -64,14 +57,8 @@ function commandControl(command, searchTerm)
     }
 }
  
-//function axios to call spotify
-//function for axios to call omdb
 
-
-//function for axios to call bands in town
-//BANDS IN TOWN************************************
-
-//REWORK TEXT DISPLAY FOR THIS FUNCTION!!!!!!!!!!!!!!!!!!!!
+//Function for axios to call Bands In Town API and return with concert information results.
 var get_Bands = function(artist)
 {
     var queryBands = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
@@ -79,41 +66,36 @@ var get_Bands = function(artist)
     .then(
         function(response) {
           var concertData = response.data;
-          console.log(concertData);
     
           if (!concertData.length) {
-            console.log("No results found for " + artist);
+            console.log("No concert dates found for " + artist+ " at this time!");
             return;
           }
     
-          console.log("Upcoming concerts for " + artist + ":");
+          console.log("Upcoming concerts for: " + artist + ":");
           console.log("===============================");
     
           for (var i = 0; i < concertData.length; i++) {
             var show = concertData[i];
     
-            // Print data about each concert
-            // If a concert doesn't have a region, display the country instead
-            // Use moment to format the date
+            // Iterate and display data about each concert.
+            // If a concert doesn't have a region, show the country instead.
             console.log(
-              " - " +show.venue.city +
-                "," +
-                (show.venue.region || show.venue.country) +
-                " at " +
-                show.venue.name +
-                " " +
-                moment(show.datetime).format("MM/DD/YYYY")
-            );
+            "• " + moment(show.datetime).format("MM/DD/YYYY")
+            +" - " +show.venue.name + " in "
+            + show.venue.city + ", "+
+            (show.venue.region || show.venue.country));
           }
         }
       );
     };
 
+//Function that makes a call to the Spotify API to gather results for the song search parameter added by the user.
+//If the user dpoes not input an song, the song name is defaulted to The Sign by Ace of Bsse.
 var get_Spotify = function(songName) {
-        if (songName === undefined) {
+        if (songName === undefined || songName === "") {
           songName = "The Sign";
         }
-      
         spotify.search(
           {
             type: "track",
@@ -121,66 +103,66 @@ var get_Spotify = function(songName) {
           },
           function(err, data) {
             if (err) {
-              console.log("Error occurred: " + err);
+              console.log("Your Spotify search caused an error to occur: " + err);
               return;
             }
       
             var songs = data.tracks.items;
       
             for (var i = 0; i < songs.length; i++) {
-              console.log(i);
-              console.log("artist(s): " + songs[i].artists.map(getArtistNames));
-              console.log("song name: " + songs[i].name);
-              console.log("preview song: " + songs[i].preview_url);
-              console.log("album: " + songs[i].album.name);
+              console.log("Song: " + (i + 1)+ " of "+ songs.length);
+              console.log("Artist(s): " + songs[i].artists.map(getArtistNames));
+              console.log("Name of the Song: " + songs[i].name);
+              console.log("Song Preview Link: " + songs[i].preview_url);
+              console.log("Album: " + songs[i].album.name);
               console.log("-----------------------------------");
             }
           }
         );
       };
       
+//Function makes a call to the OMDB API to find movie results by title or if no movie title is given
+// the movie title is defauklted to Mr. Nobody.
 var get_Movie = function(movieName) {
-    if (movieName === undefined) {
+    if (movieName === undefined || movieName === "") {
         movieName = "Mr Nobody";
     }
     
-    var urlHit =
+    var urlGet =
         "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=full&tomatoes=true&apikey=trilogy";
     
-    axios.get(urlHit).then(
+    axios.get(urlGet).then(
         function(response) {
-        var jsonData = response.data;
+        var movieData = response.data;
     
-        console.log("Title: " + jsonData.Title);
-        console.log("Year: " + jsonData.Year);
-        console.log("Rated: " + jsonData.Rated);
-        console.log("IMDB Rating: " + jsonData.imdbRating);
-        console.log("Country: " + jsonData.Country);
-        console.log("Language: " + jsonData.Language);
-        console.log("Plot: " + jsonData.Plot);
-        console.log("Actors: " + jsonData.Actors);
-        console.log("Rotten Tomatoes Rating: " + jsonData.Ratings[1].Value);
+        console.log("Movie Title: " + movieData.Title);
+        console.log("Release Year: " + movieData.Year);
+        console.log("Rated: " + movieData.Rated);
+        console.log("IMDB Rating: " + movieData.imdbRating);
+        console.log("Rotten Tomatoes Rating: " + movieData.Ratings[1].Value);
+        console.log("Country: " + movieData.Country);
+        console.log("Language: " + movieData.Language);
+        console.log("Actors: " + movieData.Actors);
+        console.log("Plot: " + movieData.Plot);
         }
     );
 };
 
+//Function uses filestream to open a text file called: randpm.txt, and reads an embeded command from the file
+// that gets executed. Results are the displayed an the filestream closed.
 var get_Random = function() {
     fs.readFile("random.txt", "utf8", function(error, data) {
       console.log(data);
   
-      var dataArr = data.split(",");
+      var collection = data.split(",");
   
-      if (dataArr.length === 2) {
-        commandControl(dataArr[0], dataArr[1]);
-      } else if (dataArr.length === 1) {
-        commandControl(dataArr[0]);
+      if (collection.length === 2) {
+        commandControl(collection[0], collection[1]);
+      } else if (collection.length === 1) {
+        commandControl(collection[0]);
       }
     });
   };
-  
-
     
-    commandControl(command, searchTerm);
-//function to open text file and read
-//functgion do what it says function
-//function commands control (switch )
+//Invoking the commnd control call that parses the command the user inputs for further processing.
+commandControl(command, searchTerm);
